@@ -8,20 +8,28 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
+find_package(Boost REQUIRED 
+	COMPONENTS
+		program_options
+)
+
 add_executable(fallout_dice_roll_cpp
+	src/combat_dice.hpp
+    src/combat_dice.cpp
 	src/fallout_dice_roll_cpp.cpp
 )
 target_compile_features(fallout_dice_roll_cpp
 	PRIVATE
-		cxx_std_17
+		cxx_std_23
 )
 target_include_directories(fallout_dice_roll_cpp
 	PRIVATE
 		include
+		deps/randutils
 )
 target_link_libraries(fallout_dice_roll_cpp
 	PRIVATE
-		# STUB
+		Boost::boost
 )
 target_compile_options(fallout_dice_roll_cpp
 	PRIVATE
