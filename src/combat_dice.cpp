@@ -3,7 +3,7 @@
 namespace fallout {
 
 [[nodiscard]] 
-auto roll::to_string() const -> std::string {
+auto roll_result::to_string() const -> std::string {
 	std::string result;
 	result.reserve(25);
 	result += "Damage: ";
@@ -14,24 +14,24 @@ auto roll::to_string() const -> std::string {
 }
 
 [[nodiscard]] 
-auto to_string(const roll& r) -> std::string { return r.to_string(); }
+auto to_string(const roll_result& r) -> std::string { return r.to_string(); }
 
-auto operator<<(std::ostream& os, const roll& r) -> std::ostream& { 
+auto operator<<(std::ostream& os, const roll_result& r) -> std::ostream& { 
 	return os << to_string(r); 
 }
 
 [[nodiscard]] 
-auto roll_result::to_string() const -> std::string { return total().to_string(); }
+auto accumulated_roll_result::to_string() const -> std::string { return total().to_string(); }
 
 [[nodiscard]] 
-auto to_string(const roll_result& rr) -> std::string { return rr.to_string(); }
+auto to_string(const accumulated_roll_result& ar) -> std::string { return ar.to_string(); }
 
-auto operator<<(std::ostream& os, const roll_result& rr) -> std::ostream& { 
-	return os << to_string(rr); 
+auto operator<<(std::ostream& os, const accumulated_roll_result& ar) -> std::ostream& { 
+	return os << to_string(ar); 
 }
 
 [[nodiscard]]
-auto roll_result::to_report_string() const -> std::string { 
+auto accumulated_roll_result::to_report_string() const -> std::string { 
 	std::string report = "Rolls: "; 
 	for (const auto& r : rolls_) {
 		report += std::format("[{} {}] ", r.damage, r.effects);
@@ -49,28 +49,28 @@ auto roll_result::to_report_string() const -> std::string {
 
 }
 
-auto std::formatter<fallout::roll, char>::parse(std::format_parse_context& ctx) 
+auto std::formatter<fallout::roll_result, char>::parse(std::format_parse_context& ctx) 
 	-> decltype(ctx.begin()) 
 { 
 	return formatter.parse(ctx); 
 }
 
-auto std::formatter<fallout::roll, char>::format(
-	const fallout::roll& r, 
+auto std::formatter<fallout::roll_result, char>::format(
+	const fallout::roll_result& r, 
 	std::format_context& ctx
 ) const -> decltype(ctx.out()) {
 	return formatter.format(fallout::to_string(r), ctx);
 }
 
-auto std::formatter<fallout::roll_result, char>::parse(std::format_parse_context& ctx) 
+auto std::formatter<fallout::accumulated_roll_result, char>::parse(std::format_parse_context& ctx) 
 	-> decltype(ctx.begin()) 
 {
 	return formatter.parse(ctx);
 }
 
-auto std::formatter<fallout::roll_result, char>::format(
-	const fallout::roll_result& rr, 
+auto std::formatter<fallout::accumulated_roll_result, char>::format(
+	const fallout::accumulated_roll_result& ar, 
 	std::format_context& ctx
 ) const -> decltype(ctx.out()) {
-	return formatter.format(rr.total(), ctx);
+	return formatter.format(ar.total(), ctx);
 }
