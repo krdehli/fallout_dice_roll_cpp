@@ -108,7 +108,7 @@ public:
 	template <std::uniform_random_bit_generator Rng>
 	[[nodiscard]] 
 	static auto roll(Rng& rng, unsigned int num) -> roll_result {
-		static std::uniform_int_distribution<std::size_t> dist{0, num_faces - 1};
+		static std::uniform_int_distribution<std::size_t> dist{0, std::size(faces) - 1};
 		std::vector<fallout::roll> rolls(num, fallout::roll{});
 		std::ranges::generate(rolls, [&]{ return faces[dist(rng)]; });
 		return roll_result{rolls};
@@ -145,16 +145,15 @@ public:
 	}
 
 private:
-	constexpr static std::size_t num_faces{6};
 	// The values of the faces on a Fallout Combat Dice
-	constexpr static std::array<fallout::roll, num_faces> faces{{
-		{1}, 
-		{2}, 
-		{0}, 
-		{0}, 
-		{1, 1}, 
-		{1, 1}
-	}};
+	constexpr static std::array faces{
+		fallout::roll{1}, 
+		fallout::roll{2}, 
+		fallout::roll{0}, 
+		fallout::roll{0}, 
+		fallout::roll{1, 1}, 
+		fallout::roll{1, 1}
+	};
 };
 
 }
