@@ -140,21 +140,21 @@ public:
 	template <std::ranges::input_range R>
 	requires std::invocable<decltype(from_dice_roll), std::ranges::range_value_t<R>>
 	[[nodiscard]] 
-	static auto from_dice_rolls(R&& range) noexcept -> accumulated_roll_result { 
+	static auto from_dice_rolls(R&& range) -> accumulated_roll_result { 
 		return from_dice_rolls(std::ranges::begin(range), std::ranges::end(range));
 	}
 
 	template <typename Int>
 	requires std::convertible_to<Int, unsigned int>
 	[[nodiscard]] 
-	static auto from_dice_rolls(std::initializer_list<Int> ilist) noexcept -> accumulated_roll_result {
+	static auto from_dice_rolls(std::initializer_list<Int> ilist) -> accumulated_roll_result {
 		return from_dice_rolls(ilist.begin(), ilist.end());
 	}
 
 	template <typename First_int, typename... Ints>
 	requires std::convertible_to<First_int, unsigned int> && (std::convertible_to<Ints, First_int> && ...)
 	[[nodiscard]] 
-	static auto from_dice_rolls(First_int&& first_int, Ints&&... ints) noexcept -> accumulated_roll_result {
+	static auto from_dice_rolls(First_int&& first_int, Ints&&... ints) -> accumulated_roll_result {
 		return from_dice_rolls({first_int, static_cast<First_int>(std::forward<Ints>(ints))...});
 	}
 
