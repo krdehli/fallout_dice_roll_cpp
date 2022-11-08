@@ -16,8 +16,10 @@ find_package(Boost REQUIRED
 add_executable(fallout_dice_roll_cpp
 	src/combat_dice.hpp
     src/combat_dice.cpp
+	src/d20_test.hpp
+	src/d20_test.cpp
 	src/fallout_dice_roll_cpp.cpp
-)
+ )
 target_compile_features(fallout_dice_roll_cpp
 	PRIVATE
 		cxx_std_23

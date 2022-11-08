@@ -22,14 +22,14 @@ struct roll_result
 	int effects;
 
 	constexpr 
-	roll_result(int damage = 0, int effects = 0) noexcept : 
+	explicit roll_result(int damage = 0, int effects = 0) noexcept : 
 		damage{damage}, 
 		effects{effects} 
 	{}
 
 	[[nodiscard]] friend constexpr 
 	auto operator+(const roll_result& lhs, const roll_result& rhs) noexcept -> roll_result {
-		return {
+		return roll_result{
 			lhs.damage + rhs.damage, 
 			lhs.effects + rhs.effects
 		};
@@ -86,7 +86,7 @@ public:
 	auto effect_triggered() const noexcept -> bool { return total_.effects > 0; }
 
 	auto to_string() const -> std::string;
-	friend auto operator<<(std::ostream& os, const accumulated_roll_result& rr) -> std::ostream&;
+	friend auto operator<<(std::ostream& os, const accumulated_roll_result& ar) -> std::ostream&;
 	
 	//! Produces a string listing of all individual dice rolls and the total result.
 	auto to_report_string() const -> std::string;
