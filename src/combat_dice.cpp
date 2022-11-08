@@ -3,39 +3,43 @@
 namespace fallout {
 
 [[nodiscard]] 
-auto to_string(const roll& r) -> std::string {
+auto roll::to_string() const -> std::string {
 	std::string result;
 	result.reserve(25);
 	result += "Damage: ";
-	result += std::to_string(r.damage);
+	result += std::to_string(damage);
 	result += ", Effects: ";
-	result += std::to_string(r.effects);
+	result += std::to_string(effects);
 	return result;
 }
+
+[[nodiscard]] 
+auto to_string(const roll& r) -> std::string { return r.to_string(); }
 
 auto operator<<(std::ostream& os, const roll& r) -> std::ostream& { 
 	return os << to_string(r); 
 }
 
 [[nodiscard]] 
-auto to_string(const roll_result& rr) -> std::string {
-	return to_string(rr.total()); 
-}
+auto roll_result::to_string() const -> std::string { return total().to_string(); }
+
+[[nodiscard]] 
+auto to_string(const roll_result& rr) -> std::string { return rr.to_string(); }
 
 auto operator<<(std::ostream& os, const roll_result& rr) -> std::ostream& { 
 	return os << to_string(rr); 
 }
 
 [[nodiscard]]
-auto to_report_string(const roll_result& rr) -> std::string { 
+auto roll_result::to_report_string() const -> std::string { 
 	std::string report = "Rolls: "; 
-	for (const auto& r : rr.rolls_) {
+	for (const auto& r : rolls_) {
 		report += std::format("[{} {}] ", r.damage, r.effects);
 	}
 	report += '\n';
-	report += std::format("Total damage: {}\n", rr.total_.damage);
-	if (rr.effect_triggered()) {
-		report += std::format("Total effects: {}", rr.total_.effects);
+	report += std::format("Total damage: {}\n", total_.damage);
+	if (effect_triggered()) {
+		report += std::format("Total effects: {}", total_.effects);
 	}
 	else {
 		report += "No effects";
@@ -55,7 +59,7 @@ auto std::formatter<fallout::roll, char>::format(
 	const fallout::roll& r, 
 	std::format_context& ctx
 ) const -> decltype(ctx.out()) {
-	return formatter.format(to_string(r), ctx);
+	return formatter.format(fallout::to_string(r), ctx);
 }
 
 auto std::formatter<fallout::roll_result, char>::parse(std::format_parse_context& ctx) 

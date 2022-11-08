@@ -42,9 +42,13 @@ struct roll
 		return *this;
 	}
 
-	friend auto to_string(const roll& r) -> std::string;
+	[[nodiscard]]
+	auto to_string() const -> std::string;
 	friend auto operator<<(std::ostream& os, const roll& r) -> std::ostream&;
 };
+
+[[nodiscard]] 
+auto to_string(const roll& r) -> std::string;
 
 //! Groups multiple rolls of combat dice together to allow for inspection of both the total rolled
 //! and the individual rolls.
@@ -81,16 +85,18 @@ public:
 	[[nodiscard]] constexpr 
 	auto effect_triggered() const noexcept -> bool { return total_.effects > 0; }
 
-	friend auto to_string(const roll_result& rr) -> std::string;
+	auto to_string() const -> std::string;
 	friend auto operator<<(std::ostream& os, const roll_result& rr) -> std::ostream&;
 	
 	//! Produces a string listing of all individual dice rolls and the total result.
-	friend auto to_report_string(const roll_result& rr) -> std::string;
+	auto to_report_string() const -> std::string;
 
 private:
 	std::vector<roll> rolls_;
 	roll total_;
 };
+
+auto to_string(const roll_result& rr) -> std::string;
 
 //! Static class used for rolling Fallout Combat Dice and converting regular d6 rolls.
 class combat_dice

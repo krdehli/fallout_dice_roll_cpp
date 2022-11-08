@@ -11,7 +11,7 @@
 int main(int argc, char* argv[])
 {
 	std::mt19937 rng{randutils::auto_seed_256{}.base()};
-	std::cout << to_report_string(fallout::combat_dice::roll(rng, 1));
+	std::cout << fallout::combat_dice::roll(rng, 1).to_report_string();
 
 	return EXIT_SUCCESS;
 }
