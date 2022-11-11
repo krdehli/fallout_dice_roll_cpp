@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.15)
 
 project(fallout_dice_roll_cpp
 	LANGUAGES CXX
@@ -8,33 +8,15 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
-find_package(Boost REQUIRED 
-	COMPONENTS
-		program_options
+add_library(common_options INTERFACE)
+target_compile_features(common_options
+	INTERFACE
+		cxx_std_20
 )
 
-add_executable(fallout_dice_roll_cpp
-	src/combat_dice.hpp
-    src/combat_dice.cpp
-	src/d20_test.hpp
-	src/d20_test.cpp
-	src/fallout_dice_roll_cpp.cpp
- )
-target_compile_features(fallout_dice_roll_cpp
-	PRIVATE
-		cxx_std_23
-)
-target_include_directories(fallout_dice_roll_cpp
-	PRIVATE
-		include
-		deps/randutils
-)
-target_link_libraries(fallout_dice_roll_cpp
-	PRIVATE
-		Boost::boost
-)
-target_compile_options(fallout_dice_roll_cpp
-	PRIVATE
+add_library(common_warnings INTERFACE)
+target_compile_options(common_warnings
+	INTERFACE
 		$<$<CXX_COMPILER_ID:Clang,AppleClang,GNU>:
 			-Wall
             -Wextra # reasonable and standard
@@ -85,3 +67,55 @@ target_compile_options(fallout_dice_roll_cpp
 		    /permissive- # standards conformance mode for MSVC compiler.
 		>
 )
+
+find_package(Boost REQUIRED 
+	COMPONENTS
+		program_options
+)
+
+# C/C++ Library
+add_library(dice_lib 
+	cpp_api/combat_dice.hpp
+    src/combat_dice.cpp
+	cpp_api/d20_test.hpp
+	src/d20_test.cpp
+)
+add_library(fallout_dice_roll::dice_lib ALIAS dice_lib)
+
+target_compile_features(dice_lib
+	PUBLIC
+		cxx_std_20
+)
+target_include_directories(dice_lib
+	PUBLIC
+		cpp_api
+		c_api
+	PRIVATE
+		deps/randutils
+)
+target_link_libraries(dice_lib 
+	PRIVATE
+		common_options
+		common_warnings
+)
+
+# CLI exectuable
+add_executable(fallout_dice_roll_cpp
+	src/fallout_dice_roll_cpp.cpp
+ )
+target_compile_features(fallout_dice_roll_cpp
+	PRIVATE
+		cxx_std_20
+)
+target_include_directories(fallout_dice_roll_cpp
+	PRIVATE
+		deps/randutils
+)
+target_link_libraries(fallout_dice_roll_cpp
+	PRIVATE
+		common_options
+		common_warnings
+		dice_lib
+		Boost::boost
+)
+
