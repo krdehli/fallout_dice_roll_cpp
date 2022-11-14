@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <ranges>
 
-namespace fallout {
+namespace fallout_dicelib {
 
 template <std::uniform_random_bit_generator Rng>
 [[nodiscard]] 

@@ -74,26 +74,26 @@ find_package(Boost REQUIRED
 )
 
 # C/C++ Library
-add_library(dice_lib 
-	cpp_api/combat_dice.hpp
+add_library(dicelib 
+	include/fallout_dicelib_cpp/combat_dice.hpp
     src/combat_dice.cpp
-	cpp_api/d20_test.hpp
+	include/fallout_dicelib_cpp/d20_test.hpp
 	src/d20_test.cpp
 )
-add_library(fallout_dice_roll::dice_lib ALIAS dice_lib)
+add_library(fallout_dice_roll::dicelib ALIAS dicelib)
 
-target_compile_features(dice_lib
+target_compile_features(dicelib
 	PUBLIC
 		cxx_std_20
 )
-target_include_directories(dice_lib
+target_include_directories(dicelib
 	PUBLIC
-		cpp_api
-		c_api
+		include/fallout_dicelib_cpp
+		include/fallout_dicelib_c
 	PRIVATE
 		deps/randutils
 )
-target_link_libraries(dice_lib 
+target_link_libraries(dicelib 
 	PRIVATE
 		common_options
 		common_warnings
@@ -115,7 +115,7 @@ target_link_libraries(fallout_dice_roll_cpp
 	PRIVATE
 		common_options
 		common_warnings
-		dice_lib
+		dicelib
 		Boost::boost
 )
 

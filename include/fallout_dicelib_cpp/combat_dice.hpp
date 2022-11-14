@@ -13,7 +13,7 @@
 #include <numeric>
 #include <random>
 
-namespace fallout {
+namespace fallout_dicelib {
 
 //! Represents the result of rolling one or more Fallout Combat Dice.
 struct roll_result
@@ -173,10 +173,10 @@ private:
 }
 
 template <>
-class std::formatter<fallout::roll_result, char> {
+class std::formatter<fallout_dicelib::roll_result, char> {
 public:
 	auto parse(std::format_parse_context& ctx) -> decltype(ctx.begin());
-	auto format(const fallout::roll_result& r, std::format_context& ctx) const 
+	auto format(const fallout_dicelib::roll_result& r, std::format_context& ctx) const 
 		-> decltype(ctx.out());
 
 private:
@@ -184,13 +184,13 @@ private:
 };
 
 template <>
-class std::formatter<fallout::accumulated_roll_result, char> {
+class std::formatter<fallout_dicelib::accumulated_roll_result, char> {
 public:
 	auto parse(std::format_parse_context& ctx) -> decltype(ctx.begin());
-	auto format(const fallout::accumulated_roll_result& ar, std::format_context& ctx) const -> decltype(ctx.out());
+	auto format(const fallout_dicelib::accumulated_roll_result& ar, std::format_context& ctx) const -> decltype(ctx.out());
 
 private:
-	mutable std::formatter<fallout::roll_result> formatter;
+	mutable std::formatter<fallout_dicelib::roll_result> formatter;
 };
 
 #endif

@@ -1,6 +1,6 @@
 #include "combat_dice.hpp"
 
-namespace fallout {
+namespace fallout_dicelib {
 
 [[nodiscard]] 
 auto roll_result::to_string() const -> std::string {
@@ -49,27 +49,27 @@ auto accumulated_roll_result::to_report_string() const -> std::string {
 
 }
 
-auto std::formatter<fallout::roll_result, char>::parse(std::format_parse_context& ctx) 
+auto std::formatter<fallout_dicelib::roll_result, char>::parse(std::format_parse_context& ctx) 
 	-> decltype(ctx.begin()) 
 { 
 	return formatter.parse(ctx); 
 }
 
-auto std::formatter<fallout::roll_result, char>::format(
-	const fallout::roll_result& r, 
+auto std::formatter<fallout_dicelib::roll_result, char>::format(
+	const fallout_dicelib::roll_result& r, 
 	std::format_context& ctx
 ) const -> decltype(ctx.out()) {
-	return formatter.format(fallout::to_string(r), ctx);
+	return formatter.format(fallout_dicelib::to_string(r), ctx);
 }
 
-auto std::formatter<fallout::accumulated_roll_result, char>::parse(std::format_parse_context& ctx) 
+auto std::formatter<fallout_dicelib::accumulated_roll_result, char>::parse(std::format_parse_context& ctx) 
 	-> decltype(ctx.begin()) 
 {
 	return formatter.parse(ctx);
 }
 
-auto std::formatter<fallout::accumulated_roll_result, char>::format(
-	const fallout::accumulated_roll_result& ar, 
+auto std::formatter<fallout_dicelib::accumulated_roll_result, char>::format(
+	const fallout_dicelib::accumulated_roll_result& ar, 
 	std::format_context& ctx
 ) const -> decltype(ctx.out()) {
 	return formatter.format(ar.total(), ctx);
