@@ -21,7 +21,7 @@ class dice_roller
 {
 public:
 	using generator_type = Rng;
-	using seed_seq_type = randutils::seed_seq_fe<Seed_count, Seed_rep>>;
+	using seed_seq_type = randutils::seed_seq_fe<Seed_count, Seed_rep>;
 
 	dice_roller() : 
 		rng_{randutils::auto_seeded<seed_seq_type>{}.base()} 
