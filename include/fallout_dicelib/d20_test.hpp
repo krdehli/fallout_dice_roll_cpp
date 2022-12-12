@@ -23,17 +23,24 @@ auto roll_d20s(Rng& rng, unsigned int num) -> std::vector<unsigned int> {
 	return rolls;
 }
 
-struct test_parameters
+enum class skill_tag : bool
 {
+	NOT_TAGGED = false,
+	TAGGED = true
+};
+
+struct test_parameters {
+	using enum skill_tag;
+
 	unsigned int attribute;
 	unsigned int skill;
-	bool tagged;
+	skill_tag tagged;
 
 	constexpr 
 	explicit test_parameters(
 		unsigned int attribute = 0, 
 		unsigned int skill = 0, 
-		bool tagged = false
+		skill_tag tagged = NOT_TAGGED
 	) noexcept : 
 		attribute{attribute}, 
 		skill{skill}, 
@@ -45,7 +52,7 @@ struct test_parameters
 
 	[[nodiscard]] constexpr 
 	auto crit_threshold() const -> unsigned int {
-		return tagged ? skill : 1; 
+		return (tagged == TAGGED) ? skill : 1; 
 	}
 };
 

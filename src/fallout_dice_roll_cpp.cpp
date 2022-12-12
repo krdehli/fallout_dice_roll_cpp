@@ -11,16 +11,19 @@
 
 int main(int argc, char* argv[])
 {
-	std::mt19937 rng{randutils::auto_seed_256{}.base()};
-	std::cout << to_report_string(fallout_dicelib::combat_dice::roll(rng, 10)) << "\n";
-	std::cout << to_report_string(fallout_dicelib::combat_dice::from_dice_rolls({1, 2, 3, 4, 5, 6})) << "\n";
-	std::cout << to_report_string(fallout_dicelib::combat_dice::from_dice_rolls(1, 2U)) << "\n";
+	namespace fd = fallout_dicelib;
+	using enum fd::skill_tag;
 
-	for (unsigned roll : fallout_dicelib::roll_d20s(rng, 10)) {
+	std::mt19937 rng{randutils::auto_seed_256{}.base()};
+	std::cout << to_report_string(fd::combat_dice::roll(rng, 10)) << "\n";
+	std::cout << to_report_string(fd::combat_dice::from_dice_rolls({1, 2, 3, 4, 5, 6})) << "\n";
+	std::cout << to_report_string(fd::combat_dice::from_dice_rolls(1, 2U)) << "\n";
+
+	for (unsigned roll : fd::roll_d20s(rng, 10)) {
 		std::cout << roll << ' ';
 	}
 	std::cout << '\n';
-	fallout_dicelib::test_parameters param{8, 3, true};
-	std::cout << fallout_dicelib::d20_test(rng, param).successes();
+	fd::test_parameters param{8, 3, NOT_TAGGED};
+	std::cout << fd::d20_test(rng, param).successes();
 	return EXIT_SUCCESS;
 }
