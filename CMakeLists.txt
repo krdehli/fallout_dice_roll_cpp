@@ -75,10 +75,12 @@ find_package(Boost REQUIRED
 
 # C/C++ Library
 add_library(dicelib 
-	include/fallout_dicelib_cpp/combat_dice.hpp
+	include/fallout_dicelib/combat_dice.hpp
     src/combat_dice.cpp
-	include/fallout_dicelib_cpp/d20_test.hpp
+	include/fallout_dicelib/d20_test.hpp
 	src/d20_test.cpp
+	include/fallout_dicelib/convenience.hpp
+	src/convenience.cpp
 )
 add_library(fallout_dice_roll::dicelib ALIAS dicelib)
 
@@ -88,8 +90,7 @@ target_compile_features(dicelib
 )
 target_include_directories(dicelib
 	PUBLIC
-		include/fallout_dicelib_cpp
-		include/fallout_dicelib_c
+		include/fallout_dicelib
 	PRIVATE
 		deps/randutils
 )
