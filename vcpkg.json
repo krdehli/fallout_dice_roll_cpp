@@ -3,6 +3,9 @@
 	"name": "fallout-dice-roll-cpp",
 	"version": "0.0.1",
 	"dependencies": [
-		"boost-program-options"
+		"boost-program-options",
+		"boost-describe",
+		"spdlog",
+		"catch2"
 	]
 }

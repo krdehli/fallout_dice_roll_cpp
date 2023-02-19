@@ -6,22 +6,52 @@
 #include <algorithm>
 #include <ranges>
 
+#include <krsd/die.hpp>
+#include <krsd/roller.hpp>
+
 namespace fallout_dicelib {
 
-template <std::uniform_random_bit_generator Rng>
-[[nodiscard]] 
-auto roll_d20(Rng& rng) -> unsigned int {
-	static std::uniform_int_distribution dist{1, 20};
-	return dist(rng);
-}
+using d20 = krsd::n_sided_die<unsigned, 20>;
 
-template <std::uniform_random_bit_generator Rng>
-[[nodiscard]] 
-auto roll_d20s(Rng& rng, unsigned int num) -> std::vector<unsigned int> {
-	std::vector<unsigned int> rolls(num, 0);
-	std::ranges::generate(rolls, [&]{ return roll_d20(rng); });
-	return rolls;
-}
+enum class hit_location
+{
+	HEAD,
+	TORSO,
+	LEFT_ARM,
+	RIGHT_ARM,
+	LEFT_LEG,
+	RIGHT_LEG
+};
+
+using hit_location_die = krsd::die<
+	hit_location, 
+
+	hit_location::HEAD,
+	hit_location::HEAD,
+
+	hit_location::TORSO,
+	hit_location::TORSO,
+	hit_location::TORSO,
+	hit_location::TORSO,
+	hit_location::TORSO,
+	hit_location::TORSO,
+
+	hit_location::LEFT_ARM,
+	hit_location::LEFT_ARM,
+	hit_location::LEFT_ARM,
+
+	hit_location::RIGHT_ARM,
+	hit_location::RIGHT_ARM,
+	hit_location::RIGHT_ARM,
+
+	hit_location::LEFT_LEG,
+	hit_location::LEFT_LEG,
+	hit_location::LEFT_LEG,
+
+	hit_location::RIGHT_LEG,
+	hit_location::RIGHT_LEG,
+	hit_location::RIGHT_LEG
+>;
 
 enum class skill_tag : bool
 {
@@ -91,12 +121,12 @@ struct test_result
 };
 
 template <std::ranges::range R>
-requires std::convertible_to<std::ranges::range_value_t<R>, unsigned int>
+requires std::convertible_to<std::ranges::range_value_t<R>, krsd::roll_result<d20>>
 [[nodiscard]] 
 auto test_rolls(const test_parameters& params, R&& r) noexcept -> test_result {
 	test_result result;
 
-	for (unsigned int roll : r) {
+	for (const auto& roll : r) {
 		if (roll == 20) {
 			result.critical_failures += 1;
 		}
@@ -110,50 +140,28 @@ auto test_rolls(const test_parameters& params, R&& r) noexcept -> test_result {
 	return result;
 }
 
-template <std::uniform_random_bit_generator Rng>
-[[nodiscard]] 
-auto d20_test(
-	Rng& rng,
-	const test_parameters& params, 
-	unsigned int num_rolls = 2
-) -> test_result {
-	return test_rolls(params, roll_d20s(rng, num_rolls));
-}
-
-enum class hit_location
+template <krsd::random_integer_distribution Dist>
+class generic_d20_test_roller 
 {
-	HEAD,
-	TORSO,
-	LEFT_ARM,
-	RIGHT_ARM,
-	LEFT_LEG,
-	RIGHT_LEG
+public:
+	generic_d20_test_roller() {}
+
+	template <std::uniform_random_bit_generator Rng>
+	[[nodiscard]]
+	auto test(
+		Rng& rng,
+		const test_parameters& params,
+		unsigned int num_rolls = 2
+	) -> test_result
+	{
+		return test_rolls(params, roller_.roll(rng, num_rolls).rolls());
+	}
+
+private:
+	krsd::generic_roller<Dist, d20> roller_;
 };
 
-template <std::uniform_random_bit_generator Rng>
-[[nodiscard]] 
-auto roll_hit_location(Rng& rng) -> hit_location {
-	const auto roll = roll_d6(rng);
-
-	if (roll < 3) {
-		return hit_location::HEAD;
-	}
-	else if (roll < 9) {
-		return hit_location::TORSO;
-	}
-	else if (roll < 12) {
-		return hit_location::LEFT_ARM;
-	}
-	else if (roll < 15) {
-		return hit_location::RIGHT_ARM;
-	}
-	else if (roll < 18) {
-		return hit_location::LEFT_LEG;
-	}
-	else {
-		return hit_location::RIGHT_LEG;
-	}
-}
+using d20_test_roller = generic_d20_test_roller<std::uniform_int_distribution<std::size_t>>;
 
 }
 

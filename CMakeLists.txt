@@ -1,6 +1,8 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.21)
 
 project(fallout_dice_roll_cpp
+	VERSION 0.0.1
+	DESCRIPTION "Fallout dice roll C++"
 	LANGUAGES CXX
 )
 
@@ -8,11 +10,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
-add_library(common_options INTERFACE)
-target_compile_features(common_options
-	INTERFACE
-		cxx_std_20
-)
+option(FALLOUT_DICE_ROLL_BUILD_TESTS "Build unit tests."  ${PROJECT_IS_TOP_LEVEL})
+option(FALLOUT_DICE_ROLL_BUILD_CLI "Build command-line interface exectuable." ON)
+option(FALLOUT_DICE_ROLL_INSTALL "Install CMake targets." ${PROJECT_IS_TOP_LEVEL})
 
 add_library(common_warnings INTERFACE)
 target_compile_options(common_warnings
@@ -68,55 +68,67 @@ target_compile_options(common_warnings
 		>
 )
 
-find_package(Boost REQUIRED 
-	COMPONENTS
-		program_options
+include(FetchContent)
+FetchContent_Declare(
+	randutils
+	URL https://gist.githubusercontent.com/gnzlbg/efbacf7c668f783cd021/raw/3ce6dc972f63d13eb0488e8496067f69d2c45a51/randutils.hpp
+	URL_HASH SHA256=8095f90c01a134ed35c091d9c6fbc696f898e4aadefb448daa171fdd875502ed
+	DOWNLOAD_NO_EXTRACT TRUE
+)
+FetchContent_Declare(
+	krsd_bounded_numbers
+	GIT_REPOSITORY https://github.com/krdehli/bounded_numbers.git
+	GIT_TAG develop
+)
+FetchContent_Declare(
+	krsd_dicelib
+	GIT_REPOSITORY https://github.com/krdehli/dicelib.git
+	GIT_TAG develop
+)
+FetchContent_MakeAvailable(
+	randutils
+	krsd_bounded_numbers 
+	krsd_dicelib
 )
 
-# C/C++ Library
-add_library(dicelib 
+add_library(fallout_dice_roll_lib
 	include/fallout_dicelib/combat_dice.hpp
     src/combat_dice.cpp
 	include/fallout_dicelib/d20_test.hpp
 	src/d20_test.cpp
-	include/fallout_dicelib/convenience.hpp
-	src/convenience.cpp
 )
-add_library(fallout_dice_roll::dicelib ALIAS dicelib)
 
-target_compile_features(dicelib
+include(GNUInstallDirs)
+
+target_compile_features(fallout_dice_roll_lib
 	PUBLIC
-		cxx_std_20
+		cxx_std_23
 )
-target_include_directories(dicelib
+target_include_directories(fallout_dice_roll_lib
 	PUBLIC
-		include/fallout_dicelib
+		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+		$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 	PRIVATE
-		deps/randutils
+		${randutils_SOURCE_DIR}
 )
-target_link_libraries(dicelib 
+target_link_libraries(fallout_dice_roll_lib
+	PUBLIC
+		krsd::bounded_numbers
+		krsd::dicelib
 	PRIVATE
-		common_options
 		common_warnings
 )
 
-# CLI exectuable
-add_executable(fallout_dice_roll_cpp
-	src/fallout_dice_roll_cpp.cpp
- )
-target_compile_features(fallout_dice_roll_cpp
-	PRIVATE
-		cxx_std_20
-)
-target_include_directories(fallout_dice_roll_cpp
-	PRIVATE
-		deps/randutils
-)
-target_link_libraries(fallout_dice_roll_cpp
-	PRIVATE
-		common_options
-		common_warnings
-		dicelib
-		Boost::boost
-)
+if (FALLOUT_DICE_ROLL_BUILD_CLI)
+	add_subdirectory(cli)
+endif()
 
+if(FALLOUT_DICE_ROLL_BUILD_TESTS)
+	include(CTest)
+	enable_testing()
+	add_subdirectory(tests)
+endif()
+
+if (FALLOUT_DICE_ROLL_INSTALL)
+	# TODO
+endif()
