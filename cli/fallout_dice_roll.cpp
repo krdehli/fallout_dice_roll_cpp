@@ -16,15 +16,18 @@
 #include <krsd/die.hpp>
 #include <fallout_dicelib/combat_dice.hpp>
 #include <fallout_dicelib/d20_test.hpp>
+#include <fallout_dicelib/interpreter.hpp>
 
 namespace krsd {
 	BOOST_DESCRIBE_ENUM(bounded_number_error, VALUE_LESS_THAN_LOWER_BOUND, VALUE_GREATER_THAN_UPPER_BOUND);
-	BOOST_DESCRIBE_ENUM(roll_result_error, INVALID_DIE_FACE)
+	BOOST_DESCRIBE_ENUM(roll_result_error, INVALID_DIE_FACE);
+}
+
+namespace fallout_dicelib {
+	BOOST_DESCRIBE_ENUM(skill_tag, NOT_TAGGED, TAGGED);
 }
 
 auto main() -> int {
-	boost::mp11::mp_for_each<boost::describe::describe_enumerators<krsd::bounded_number_error>>([](auto d) {
-		spdlog::debug(d.name);
-	});
+	fallout_dicelib::interpreter interpreter;
 	return EXIT_SUCCESS;
 }

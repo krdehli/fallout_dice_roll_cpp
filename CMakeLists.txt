@@ -96,6 +96,7 @@ add_library(fallout_dice_roll_lib
     src/combat_dice.cpp
 	include/fallout_dicelib/d20_test.hpp
 	src/d20_test.cpp
+	include/fallout_dicelib/interpreter.hpp
 )
 
 include(GNUInstallDirs)

@@ -48,7 +48,7 @@ struct combat_die_face {
 
 	friend auto operator<=>(const combat_die_face&, const combat_die_face&) = default;
 
-	friend auto operator<<(std::ostream& out, const combat_die_face& roll_res) -> std::ostream&;
+	friend auto operator<<(std::ostream& out, const combat_die_face& dc_face) -> std::ostream&;
 };
 
 [[nodiscard]] 
@@ -56,14 +56,14 @@ auto to_string(const combat_die_face& dc_face) -> std::string;
 
 using combat_die = krsd::die<
 	combat_die_face, 
-	{1, 0},
-	{2, 0},
-	{0, 0},
-	{0, 0},
-	{1, 1},
-	{1, 1}
+	combat_die_face{1, 0},
+	combat_die_face{2, 0},
+	combat_die_face{0, 0},
+	combat_die_face{0, 0},
+	combat_die_face{1, 1},
+	combat_die_face{1, 1}
 >;
-} // namespace fallout_dicelib
+}
 
 
 template <>
