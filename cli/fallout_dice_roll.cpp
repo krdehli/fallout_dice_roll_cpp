@@ -17,6 +17,7 @@
 #include <fallout_dicelib/combat_dice.hpp>
 #include <fallout_dicelib/d20_test.hpp>
 #include <fallout_dicelib/interpreter.hpp>
+#include <fallout_dicelib/lexer.hpp>
 
 namespace krsd {
 	BOOST_DESCRIBE_ENUM(bounded_number_error, VALUE_LESS_THAN_LOWER_BOUND, VALUE_GREATER_THAN_UPPER_BOUND);
@@ -29,5 +30,6 @@ namespace fallout_dicelib {
 
 auto main() -> int {
 	fallout_dicelib::interpreter interpreter;
+	const auto result = fallout_dicelib::lex("roll 1dc");
 	return EXIT_SUCCESS;
 }
