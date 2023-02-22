@@ -126,6 +126,7 @@ requires std::convertible_to<std::ranges::range_value_t<R>, krsd::roll_result<d2
 auto test_rolls(const test_parameters& params, R&& r) noexcept -> test_result {
 	test_result result;
 
+label:
 	for (const auto& roll : r) {
 		if (roll == 20) {
 			result.critical_failures += 1;

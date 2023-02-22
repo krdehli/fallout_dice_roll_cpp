@@ -91,14 +91,21 @@ FetchContent_MakeAvailable(
 	krsd_dicelib
 )
 
+find_package(ctre CONFIG REQUIRED)
+
 add_library(fallout_dice_roll_lib
 	include/fallout_dicelib/combat_dice.hpp
     src/combat_dice.cpp
 	include/fallout_dicelib/d20_test.hpp
 	src/d20_test.cpp
-	include/fallout_dicelib/interpreter.hpp
+	include/fallout_dicelib/token.hpp
+	src/token.cpp
 	include/fallout_dicelib/lexer.hpp
 	src/lexer.cpp
+	include/fallout_dicelib/parser.hpp
+	src/parser.cpp
+	include/fallout_dicelib/interpreter.hpp
+
 )
 
 include(GNUInstallDirs)
@@ -120,6 +127,7 @@ target_link_libraries(fallout_dice_roll_lib
 		krsd::dicelib
 	PRIVATE
 		common_warnings
+		ctre::ctre
 )
 
 if (FALLOUT_DICE_ROLL_BUILD_CLI)

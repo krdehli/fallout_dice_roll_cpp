@@ -6,6 +6,7 @@
 		"boost-program-options",
 		"boost-describe",
 		"spdlog",
+		"ctre",
 		"catch2"
 	]
 }
